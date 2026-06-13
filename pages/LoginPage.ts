@@ -1,23 +1,29 @@
 import { Page, Locator } from '@playwright/test';
-import { BasePage } from './BasePage';
 
-export class LoginPage extends BasePage {
-  constructor(page: Page) {
-    super(page);
+export class LoginPage {
+  readonly usernameInput: Locator;
+  readonly passwordInput: Locator;
+  readonly loginButton: Locator;
+  readonly errorBox: Locator;
+
+  constructor(private page: Page) {
+    this.usernameInput = page.locator('[data-test="username"]');
+    this.passwordInput = page.locator('[data-test="password"]');
+    this.loginButton = page.locator('[data-test="login-button"]');
+    this.errorBox = page.locator('[data-test="error"]');
   }
 
-  private username = this.page.locator('[data-test="username"]');
-  private password = this.page.locator('[data-test="password"]');
-  private loginBtn = this.page.locator('[data-test="login-button"]');
-  private errorMsg = this.page.locator('[data-test="error"]');
+  async open() {
+    await this.page.goto('https://www.saucedemo.com/');
+  }
 
   async login(username: string, password: string) {
-    await this.username.fill(username);
-    await this.password.fill(password);
-    await this.loginBtn.click();
+    await this.usernameInput.fill(username);
+    await this.passwordInput.fill(password);
+    await this.loginButton.click();
   }
 
-  getErrorMessage() {
-    return this.errorMsg;
+   getError() {
+    return this.errorBox;
   }
 }
